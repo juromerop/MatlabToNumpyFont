@@ -1,13 +1,26 @@
 "use client";
-import { StreamLanguage } from '@codemirror/language';
-import go from '@codemirror/legacy-modes/mode/go';
+// import { StreamLanguage } from '@codemirror/language';
+// import go from '@codemirror/legacy-modes/mode/go';
+// import python from '@codemirror/legacy-modes/mode/python';
 import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
 import CodeMirror from '@uiw/react-codemirror';
-import { useEffect, useState } from "react";
+import axios from 'axios'; 
+import { useEffect, useState } from 'react';
+
 
 export default function Home() {
-  const [inputCode, setInputCode] = 'function [x, y] = f(a, b)\n  x = a + b;\n  y = a - b;\nend';
-  const [outputCode, setOutputCode] = 'def f(a, b):\n  x = a + b\n  y = a - b\n  return x, y';
+  const [inputCode, setInputCode] = useState('');
+  const [outputCode, setOutputCode] = useState('');
+
+  const handleTranslate = async () => {
+    try {
+      const response = await axios.post(process.env.NEXT_PUBLIC_API_URL + '/translate', { text: inputCode });
+      setOutputCode(response.data.outputCode);
+    } catch (error) {
+      console.error('Translation error:', error);
+    }
+  };
+
 
   return (
     <>
@@ -19,6 +32,7 @@ export default function Home() {
         <div className="mt-2 flex items-center space-x-2">
           <button
             className="w-[140px] cursor-pointer rounded-md bg-violet-500 px-4 py-2 font-bold hover:bg-violet-600 active:bg-violet-700"
+            onClick={handleTranslate}
           >
             Translate
           </button>
@@ -43,9 +57,10 @@ export default function Home() {
                   editable={true}
                   value={inputCode}
                   minHeight="500px"
-                //   extensions={[StreamLanguage.define(go)]}
                   theme={tokyoNight}
-                  onChange={(value) => onChange(value)}
+                  onChange={(value) => {
+                    setInputCode(value);
+                  }}
                 />
               </div>
           </div>
@@ -57,11 +72,10 @@ export default function Home() {
                 <button
                   className="absolute right-0 top-0 z-10 rounded bg-[#1A1B26] p-1 text-xs text-white hover:bg-[#2D2E3A] active:bg-[#2D2E3A]"
                   onClick={() => {
-                    navigator.clipboard.writeText(code);
-                    setCopyText("Copied!");
+                    navigator.clipboard.writeText(outputCode);
                   }}
                 >
-                  {/* {copyText} */}
+                  Copiar
                 </button>
 
                 <CodeMirror
@@ -69,7 +83,9 @@ export default function Home() {
                   value={outputCode}
                   minHeight="500px"
                   theme={tokyoNight}
-                  onChange={(value) => onChange(value)}
+                  onChange={(value) => {
+                    setOutputCode(value);
+                  }}
                 />
               </div>
           </div>
