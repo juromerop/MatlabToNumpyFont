@@ -10,7 +10,7 @@ export default function Home() {
 
   const handleTranslate = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/trasnlate", {
+      const response = await axios.post("http://127.0.0.1:8000/translate", {
         text: inputCode,
       });
       console.log(response);
