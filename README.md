@@ -34,7 +34,7 @@ Abre [http://localhost:3000](http://localhost:3000) en el navegador
 
 #### Integrantes
 
-* Juan Pablo
+* Juan Pablo Garzon Parra
 * Juan Diego
 * Joe Zafir
 
